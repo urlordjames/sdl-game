@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SDL2/SDL.h>
+#include "SDL2.h"
 
 SDL_Texture* loadtexture(SDL_Renderer* r, const char *str) {
     SDL_Surface* s = SDL_LoadBMP(str);

@@ -8,27 +8,37 @@ SDL_Texture* loadtexture(SDL_Renderer* r, const char *str) {
     return t;
 }
 
-void drawframe(SDL_Renderer* r, SDL_Texture* t, int scale) {
-    SDL_RenderClear(r);
-    SDL_Rect rect;
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = scale;
-    rect.h = scale;
-    SDL_RenderCopy(r, t, NULL, &rect);
-    return;
+class Entity {
+public:
+	SDL_Rect rect;
+	SDL_Texture *texture;
+};
+
+void drawEntity(SDL_Renderer* r, Entity* ent) {
+	SDL_RenderCopy(r, ent->texture, NULL, &ent->rect);
 }
 
 int main(int, char **) {
-    int scale = 0;
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Window *w = SDL_CreateWindow("dog", 100, 100, 500, 500, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     SDL_Renderer *r = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
-    SDL_Texture* t = loadtexture(r, "dog.bmp");
+
+    SDL_Texture *t = loadtexture(r, "assets/dog.bmp");
+    SDL_Rect rect;
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = 1;
+    rect.h = 1;
+    Entity *dogent = new Entity;
+    dogent->rect = rect;
+    dogent->texture = t;
+
     while (true) {
-        drawframe(r, t, scale);
-        scale += 1;
+	SDL_RenderClear(r);
+	drawEntity(r, dogent);
+	dogent->rect.w = dogent->rect.w + 1;
+	dogent->rect.h = dogent->rect.h + 1;
         SDL_RenderPresent(r);
         SDL_Event event;
         SDL_PollEvent(&event);

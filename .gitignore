@@ -34,3 +34,8 @@
 # CMake stuff
 CMakeCache.txt
 CMakeFiles
+cmake_install.cmake
+Makefile
+
+# binary
+sdl-game

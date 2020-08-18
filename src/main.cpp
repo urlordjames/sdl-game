@@ -60,7 +60,6 @@ int main(int, char **) {
     int deltatime = 0;
     while (true) {
 	int starttime = SDL_GetTicks();
-	std::cout << deltatime << std::endl;
 	SDL_RenderClear(r);
 	drawEntity(r, dogent);
 	dogcomp->rect.w = dogcomp->rect.w + 1;
@@ -72,7 +71,7 @@ int main(int, char **) {
         if (event.type == SDL_QUIT) {
             break;
         }
-	SDL_Delay(std::min(30 - deltatime, 0));
+	SDL_Delay(std::max(30 - deltatime, 0));
 	deltatime = SDL_GetTicks() - starttime;
     }
     SDL_DestroyRenderer(r);

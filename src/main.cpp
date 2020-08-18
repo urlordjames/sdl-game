@@ -1,4 +1,8 @@
 #include <iostream>
+#include <vector>
+#include <memory>
+#include <cmath>
+#include <algorithm>
 #include "SDL.h"
 
 SDL_Texture* loadtexture(SDL_Renderer* r, const char *str) {
@@ -8,14 +12,32 @@ SDL_Texture* loadtexture(SDL_Renderer* r, const char *str) {
     return t;
 }
 
-class Entity {
+class DrawComponent {
+protected:
+	SDL_Texture *tex;
 public:
+	double rot;
 	SDL_Rect rect;
-	SDL_Texture *texture;
+	DrawComponent(double rotation, SDL_Rect rectangle, SDL_Texture* texture) {
+		rot = rotation;
+		rect = rectangle;
+		tex = texture;
+	}
+
+	SDL_Texture* getTexture() {
+		return tex;
+	}
 };
 
-void drawEntity(SDL_Renderer* r, Entity* ent) {
-	SDL_RenderCopy(r, ent->texture, NULL, &ent->rect);
+class Entity {
+public:
+	std::vector<DrawComponent *> textures;
+};
+
+void drawEntity(SDL_Renderer* r, Entity* entity) {
+	for (const auto drawcomp : entity->textures) {
+		SDL_RenderCopyEx(r, drawcomp->getTexture(), NULL, &drawcomp->rect, drawcomp->rot, NULL, SDL_FLIP_NONE);
+	}
 }
 
 int main(int, char **) {
@@ -30,21 +52,28 @@ int main(int, char **) {
     rect.y = 0;
     rect.w = 1;
     rect.h = 1;
-    Entity *dogent = new Entity;
-    dogent->rect = rect;
-    dogent->texture = t;
+    DrawComponent *dogcomp = new DrawComponent(0, rect, t);
 
+    Entity *dogent = new Entity;
+    dogent->textures.push_back(dogcomp);
+
+    int deltatime = 0;
     while (true) {
+	int starttime = SDL_GetTicks();
+	std::cout << deltatime << std::endl;
 	SDL_RenderClear(r);
 	drawEntity(r, dogent);
-	dogent->rect.w = dogent->rect.w + 1;
-	dogent->rect.h = dogent->rect.h + 1;
+	dogcomp->rect.w = dogcomp->rect.w + 1;
+	dogcomp->rect.h = dogcomp->rect.h + 1;
+	dogcomp->rot = std::fmod(dogcomp->rot + 1, 360);
         SDL_RenderPresent(r);
         SDL_Event event;
         SDL_PollEvent(&event);
         if (event.type == SDL_QUIT) {
             break;
         }
+	SDL_Delay(std::min(30 - deltatime, 0));
+	deltatime = SDL_GetTicks() - starttime;
     }
     SDL_DestroyRenderer(r);
     SDL_DestroyWindow(w);

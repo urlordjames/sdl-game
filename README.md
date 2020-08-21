@@ -22,3 +22,10 @@ https://stackoverflow.com/a/44347594 may work, haven't tested though.
 cmake .
 make
 ```
+
+# docker image
+it exists I guess
+```sh
+docker build -t sdlbuild .
+docker run --rm -it sdlbuild /bin/bash
+```

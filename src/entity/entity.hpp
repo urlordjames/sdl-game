@@ -21,4 +21,6 @@ class DrawComponent {
 class Entity {
  public:
   std::vector<DrawComponent *> textures;
+  int x = 0;
+  int y = 0;
 };

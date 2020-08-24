@@ -14,10 +14,15 @@ SDL_Texture* loadtexture(SDL_Renderer* r, const char *str) {
 
 void drawEntity(SDL_Renderer* r, Entity* entity) {
   for (const auto drawcomp : entity->textures) {
+    SDL_Rect newrect;
+    newrect.x = drawcomp->rect.x + entity->x;
+    newrect.y = drawcomp->rect.y + entity->y;
+    newrect.w = drawcomp->rect.w;
+    newrect.h = drawcomp->rect.h;
     SDL_RenderCopyEx(r,
                     drawcomp->getTexture(),
                     NULL,
-                    &drawcomp->rect,
+                    &newrect,
                     drawcomp->rot,
                     NULL,
                     SDL_FLIP_NONE);
@@ -55,18 +60,20 @@ int main(int, char **) {
   int deltatime = 0;
   bool quit = false;
   while (!quit) {
-  int starttime = SDL_GetTicks();
-  SDL_RenderClear(r);
-  drawEntity(r, dogent);
-  SDL_RenderPresent(r);
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-    switch (event.type) {
-      case SDL_QUIT:
-        quit = true;
-        break;
-      case SDL_KEYDOWN:
-        break;
+    int starttime = SDL_GetTicks();
+    SDL_RenderClear(r);
+    drawEntity(r, dogent);
+    SDL_RenderPresent(r);
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+      switch (event.type) {
+        case SDL_QUIT:
+          quit = true;
+          break;
+        case SDL_KEYDOWN:
+          std::cout << dogent->x << std::endl;
+          dogent->x += 1;
+          break;
       }
     }
     SDL_Delay(std::max(30 - deltatime, 0));

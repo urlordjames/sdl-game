@@ -42,6 +42,9 @@ Entity* getDog(SDL_Renderer* r) {
   return dogent;
 }
 
+int deltatime = 0;
+bool quit = false;
+
 int main(int, char **) {
   SDL_Init(SDL_INIT_EVERYTHING);
   SDL_Window *w = SDL_CreateWindow("dog",
@@ -57,8 +60,6 @@ int main(int, char **) {
   SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
   Entity *dogent = getDog(r);
   DrawComponent *dogcomp = dogent->textures.at(0);
-  int deltatime = 0;
-  bool quit = false;
   while (!quit) {
     int starttime = SDL_GetTicks();
     SDL_RenderClear(r);

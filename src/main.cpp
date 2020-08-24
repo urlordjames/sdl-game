@@ -61,13 +61,13 @@ int main(int, char **) {
   SDL_RenderPresent(r);
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
-      switch (event.type) {
-        case SDL_QUIT:
-          quit = true;
-          break;
-        case SDL_KEYDOWN:
-          break;
-        }
+    switch (event.type) {
+      case SDL_QUIT:
+        quit = true;
+        break;
+      case SDL_KEYDOWN:
+        break;
+      }
     }
     SDL_Delay(std::max(30 - deltatime, 0));
     deltatime = SDL_GetTicks() - starttime;

@@ -79,7 +79,7 @@ int main(int, char **) {
                                       -1,
                                       SDL_RENDERER_ACCELERATED |
                                       SDL_RENDERER_PRESENTVSYNC);
-  SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
+  SDL_SetRenderDrawColor(r, 0, 0, 0, 255);
   Entity *dogent = getDog(r);
   DrawComponent *dogcomp = dogent->textures.at(0);
   while (!quit) {

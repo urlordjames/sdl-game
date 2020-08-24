@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <unordered_map>
 #include "SDL.h"
 #include "entity.hpp"
 
@@ -42,8 +43,29 @@ Entity* getDog(SDL_Renderer* r) {
   return dogent;
 }
 
+#define movespeed 1
+#define friction 0.95
+
 int deltatime = 0;
 bool quit = false;
+std::unordered_map<int, bool> keys;
+double acx = 0;
+double acy = 0;
+
+void handleInput() {
+  if (keys[79] || keys[7]) {
+    acx += movespeed;
+  }
+  if (keys[80] || keys[4]) {
+    acx -= movespeed;
+  }
+  if (keys[81] || keys[22]) {
+    acy += movespeed;
+  }
+  if (keys[82] || keys[26]) {
+    acy -= movespeed;
+  }
+}
 
 int main(int, char **) {
   SDL_Init(SDL_INIT_EVERYTHING);
@@ -62,6 +84,11 @@ int main(int, char **) {
   DrawComponent *dogcomp = dogent->textures.at(0);
   while (!quit) {
     int starttime = SDL_GetTicks();
+    handleInput();
+    dogent->x += acx;
+    dogent->y += acy;
+    dogent->x *= friction;
+    dogent->y *= friction;
     SDL_RenderClear(r);
     drawEntity(r, dogent);
     SDL_RenderPresent(r);
@@ -72,8 +99,10 @@ int main(int, char **) {
           quit = true;
           break;
         case SDL_KEYDOWN:
-          std::cout << dogent->x << std::endl;
-          dogent->x += 1;
+          keys[event.key.keysym.scancode] = true;
+          break;
+        case SDL_KEYUP:
+          keys[event.key.keysym.scancode] = false;
           break;
       }
     }

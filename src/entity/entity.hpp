@@ -8,11 +8,13 @@ class DrawComponent {
  public:
   double rot;
   SDL_Rect rect;
+
   DrawComponent(double rotation, SDL_Rect rectangle, SDL_Texture* texture) {
     rot = rotation;
     rect = rectangle;
     tex = texture;
   }
+
   SDL_Texture* getTexture() {
     return tex;
   }

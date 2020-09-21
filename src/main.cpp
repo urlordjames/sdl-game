@@ -1,6 +1,7 @@
 // Copyright 2020 urlordjames
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include <algorithm>
 #include <unordered_map>
 #include "SDL.h"
@@ -30,8 +31,13 @@ void drawEntity(SDL_Renderer* r, Entity* entity) {
   }
 }
 
-Entity* getDog(SDL_Renderer* r) {
-  SDL_Texture *t = loadtexture(r, "assets/dog.bmp");
+void drawEnts(SDL_Renderer* r, std::vector<Entity*>* ents) {
+  for (auto i : *ents) {
+    drawEntity(r, i);
+  }
+}
+
+Entity* basicEnt(SDL_Renderer* r, SDL_Texture* t) {
   SDL_Rect rect;
   rect.x = 0;
   rect.y = 0;
@@ -51,6 +57,7 @@ bool quit = false;
 std::unordered_map<int, bool> keys;
 double acx = 0;
 double acy = 0;
+std::vector<Entity*> ents;
 
 void handleInput() {
   if (keys[79] || keys[7]) {
@@ -80,16 +87,28 @@ int main(int, char **) {
                                       SDL_RENDERER_ACCELERATED |
                                       SDL_RENDERER_PRESENTVSYNC);
   SDL_SetRenderDrawColor(r, 0, 0, 0, 255);
-  Entity *dogent = getDog(r);
-  DrawComponent *dogcomp = dogent->textures.at(0);
+  Entity *dogent = basicEnt(r, loadtexture(r, "assets/dog.bmp"));
+  SDL_Texture *cheesetex = loadtexture(r, "assets/cheese.bmp");
+  Entity *cheeseent = basicEnt(r, cheesetex);
+  Entity *cheeseent2 = basicEnt(r, cheesetex);
+  cheeseent2->x = 30;
+  ents.push_back(cheeseent);
+  ents.push_back(cheeseent2);
   while (!quit) {
     int starttime = SDL_GetTicks();
     handleInput();
+    if (keys[8]) {
+      if (ents.size() > 0) {
+        auto it = ents.begin();
+        ents.erase(it);
+      }
+    }
     dogent->x += acx;
     dogent->y += acy;
     dogent->x *= friction;
     dogent->y *= friction;
     SDL_RenderClear(r);
+    drawEnts(r, &ents);
     drawEntity(r, dogent);
     SDL_RenderPresent(r);
     SDL_Event event;
